@@ -1,9 +1,10 @@
 <?php
-require __DIR__.'/mustache/src/Mustache/Autoloader.php';
-Mustache_Autoloader::register();
+require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/QROptionsExtended.php';
+require __DIR__.'/QRMarkupExtended.php';
 
 $mustache = new Mustache_Engine([
-    'cache' => dirname(__FILE__).'/..//tmp/cache/mustache', // TODO: update based on config
+    'cache' => sys_get_temp_dir().'/cache/mustache', // TODO: update based on config
     'cache_file_mode' => 0666, // TODO: may need to update this on the server (umask)
     'cache_lambda_templates' => true,
     'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/../templates'),
@@ -23,5 +24,4 @@ $mustache = new Mustache_Engine([
 $GLOBALS['RENDERER'] = $mustache;
 
 $db = new mysqli($CFG->dbhost, $CFG->dbusername, $CFG->dbpassword, $CFG->dbname);
-
 $GLOBALS['DB'] = $db;
