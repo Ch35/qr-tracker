@@ -2,6 +2,7 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "chillerlan/php-qrcode": "^4.3",
-        "mustache/mustache": "~2.5"
+        "mustache/mustache": "~2.5",
+        "mpdf/mpdf": "^8.1"
     }
 }

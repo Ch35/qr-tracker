@@ -1,7 +1,5 @@
 <?php
 require __DIR__.'/../vendor/autoload.php';
-require __DIR__.'/QROptionsExtended.php';
-require __DIR__.'/QRMarkupExtended.php';
 
 $mustache = new Mustache_Engine([
     'cache' => sys_get_temp_dir().'/cache/mustache', // TODO: update based on config

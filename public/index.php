@@ -1,5 +1,5 @@
 <?php
-require __DIR__.'/config.php';
+require __DIR__.'/../config.php';
 
 // // TODO: maybe group by $_GET['dispatchid']
 
