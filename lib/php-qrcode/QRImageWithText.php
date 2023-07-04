@@ -1,5 +1,5 @@
 <?php
-require __DIR__.'/../vendor/chillerlan/php-qrcode/examples/QRImageWithText.php';
+require __DIR__.'/../../vendor/chillerlan/php-qrcode/examples/QRImageWithText.php';
 
 class QRImageWithText extends chillerlan\QRCodeExamples\QRImageWithText{
     /**

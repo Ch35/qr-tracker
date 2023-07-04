@@ -4,5 +4,11 @@
         "chillerlan/php-qrcode": "^4.3",
         "mustache/mustache": "~2.5",
         "mpdf/mpdf": "^8.1"
+    },
+    "autoload": {
+        "classmap": ["lib/"],
+        "files": [
+            "lib/lib.php"
+        ]
     }
 }

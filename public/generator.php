@@ -1,6 +1,8 @@
 <?php
+die; //! Disabled for now :)
+
 require __DIR__.'/../config.php';
-require __DIR__.'/../lib/QRImageWithText.php';
+require __DIR__.'/../lib/php-qrcode/QRImageWithText.php';
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Mpdf\Mpdf;
