@@ -1,5 +1,7 @@
 <?php
 
+use page\auth;
+
 class renderer {
     /**
      * @var Mustache_Engine
@@ -19,9 +21,20 @@ class renderer {
     public function render($template, $data = []) {
         global $CFG;
 
+        $title = isset($data['title']) ? $data['title'] : $CFG->title;
+        $data['cfg'] = $CFG;
+
         return $this->m->render('partials/html', [
             'content' => $this->m->render($template, $data),
             'cfg' => $CFG,
+            'title' => $title,
+            'alerts' => isset($data['alerts']) ? $data['alerts'] : false,
+            'test' => isset($data['test']) ? $data['test'] : false,
         ]);
+    }
+
+    public function load_page($page){
+        $page = 'page\\'.$page;
+        $page::init()->render();
     }
 }

@@ -27,9 +27,20 @@
         </div>
         {{/header}}
 
-        <div class="mb-4">
-            {{#notices}}
-            {{/notices}}
+        <div id="alerts" class="mb-4">
+            {{#alerts}}
+                {{# warning }}
+                <div class="alert alert-danger" role="alert">
+                    {{.}}
+                </div>
+                {{/ warning }}
+
+                {{# success }}
+                <div class="alert alert-success" role="alert">
+                    {{.}}
+                </div>
+                {{/ success }}
+            {{/alerts}}
         </div>
 
         {{{content}}}
