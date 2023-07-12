@@ -10,7 +10,7 @@ export const ALERT_CLASS_MAP = {
 }
 
 export function append_notice(msg, alerttype){
-    console.log('Appending notice');
+    console.log('Appending notice'); //! debug
 
     let alertcontainer = document.getElementById('alerts');
 
@@ -26,10 +26,6 @@ export function append_notice(msg, alerttype){
     notice.setAttribute('role', 'alert');
 
     alertcontainer.appendChild(notice);
-
-    // <div class="alert alert-danger" role="alert">
-    //     {{text}}
-    // </div>
 }
 
 class location{
@@ -47,6 +43,7 @@ class location{
 
     showPosition(position) {
         console.log("Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude);
+        // TODO: SEND LOCATION VIA AJAX
     }
 
     showError(error) {

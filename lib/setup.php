@@ -1,5 +1,14 @@
 <?php
 require __DIR__.'/../vendor/autoload.php';
 
+session_start();
+
+/**
+ * @var renderer
+ */
 $GLOBALS['OUTPUT'] = new renderer();
-$GLOBALS['DB'] = new mysqli($CFG->dbhost, $CFG->dbusername, $CFG->dbpassword, $CFG->dbname);
+
+/**
+ * @var mysqli
+ */
+$GLOBALS['DB'] = db::instance();
