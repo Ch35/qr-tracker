@@ -2,10 +2,13 @@
 
 namespace page;
 
-use qr_record;
+use record\qr AS qr_record;
+use interfaces\page;
 
-class auth extends \page_interface{
+class auth extends page{
     function route_request(){
+        global $CFG;
+
         $authenticated = false;
         $authtoken = get_param('authtoken');
         $qrid = (int)get_param('qrid', null, FILTER_SANITIZE_NUMBER_INT);
@@ -30,8 +33,8 @@ class auth extends \page_interface{
                 return false;
             }
 
-            // TODO: Password needs to be a map between the distribution centres
-            $password = '123';
+            // TODO: Password may need to be a map between the distribution centres - for now we can have a global password
+            $password = $CFG->globalpassword;
     
             $authenticated = $authtoken == $password;
     

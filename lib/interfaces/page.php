@@ -1,6 +1,10 @@
 <?php
 
-abstract class page_interface{
+namespace interfaces;
+
+use Exception;
+
+abstract class page{
     private static $instances = [];
 
     const ALERT_WARNING = 0;
@@ -20,9 +24,10 @@ abstract class page_interface{
 
     /**
      * Singletons should not be restorable from strings.
+     * @throws Exception
      */
     public function __wakeup(){
-        throw new \Exception("Cannot unserialize a singleton.");
+        throw new Exception("Cannot unserialize a singleton.");
     }
 
     /**
@@ -38,11 +43,11 @@ abstract class page_interface{
     /**
      * Whether to route to a different page
      *
-     * @return bool|page_interface
+     * @return bool|page
      */
     protected abstract function route_request();
 
-    public static function init() : page_interface{
+    public static function init() : self{
         $cls = static::class;
         if (!isset(self::$instances[$cls])) {
             self::$instances[$cls] = new static();
@@ -75,6 +80,8 @@ abstract class page_interface{
      * @param string $text
      * @param int $alerttype
      * @return void
+     * 
+     * @throws \Exception
      */
     protected function append_alert($text, $alerttype){
         if(!isset(array_keys(self::ALERT_TYPES)[$alerttype])){

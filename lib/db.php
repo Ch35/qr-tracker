@@ -11,12 +11,28 @@ class db{
         $this->db = new PDO("mysql:dbname=$CFG->dbname;host=$CFG->dbhost", $CFG->dbusername, $CFG->dbpassword);
     }
 
+    /**
+     * @return self
+     */
     static function instance(){
         if(!isset(self::$instance)){
             self::$instance = new self();
         }
 
         return self::$instance;
+    }
+
+    /**
+     * @param string $sql
+     * @param array $params
+     * @param bool $return_statement
+     * @return bool|PDOStatement
+     */
+    function execute($sql, $params = [], $return_statement = false){
+        $statement = $this->db->prepare($sql);
+        $execution = $statement->execute($params);
+
+        return $return_statement ? $statement : $execution;
     }
 
     /**

@@ -9,6 +9,6 @@ session_start();
 $GLOBALS['OUTPUT'] = new renderer();
 
 /**
- * @var mysqli
+ * @var db
  */
 $GLOBALS['DB'] = db::instance();

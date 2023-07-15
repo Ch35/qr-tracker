@@ -13,7 +13,8 @@ $GLOBALS['CFG'] = (object)[
     'dbusername' => 'root',
     'dbpassword' => '',
     'dbname' => 'qrtracker',
-    'title' => 'Simba QR Tracker'
+    'title' => 'Simba QR Tracker',
+    'globalpassword' => '123',
 ];
 
 require __DIR__.'/lib/setup.php';

@@ -2,7 +2,9 @@
 
 namespace page;
 
-class form extends \page_interface{
+use interfaces\page;
+
+class form extends page{
     function route_request(){
         return false;
     }
