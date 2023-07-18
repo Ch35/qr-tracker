@@ -10,6 +10,17 @@ function validate_sesskey(){
 }
 
 /**
+ * @return string|false
+ */
+function get_sesskey(){
+    if(!validate_sesskey()){
+        return false;
+    }
+
+    return $_SESSION['sesskey'];
+}
+
+/**
  * @param string $name
  * @param mixed $default
  * @param int $filtertype

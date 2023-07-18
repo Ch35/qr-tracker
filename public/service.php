@@ -2,7 +2,8 @@
 require __DIR__.'/../config.php';
 
 $method = get_param('method');
-$params = json_decode(get_param('params'));
+$params = json_decode(get_param('params'), true);
+// TODO: may need to get sesskey from here
 
 try{
     interfaces\service::init($method, $params);
