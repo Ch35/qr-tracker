@@ -4,6 +4,8 @@ namespace interfaces;
 
 use Exception;
 
+// TODO: if have session key - implement logout button!
+
 abstract class page{
     private static $instances = [];
 
