@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * Validates whether a session key is valid
+ *
+ * @return bool
+ */
+function validate_sesskey(){
+    return isset($_SESSION['sesskey']);
+}
+
+/**
  * @param string $name
  * @param mixed $default
  * @param int $filtertype
@@ -18,6 +27,12 @@ function get_param($name, $default = null, $filtertype = FILTER_DEFAULT){
     return $default;
 }
 
+/**
+ * Used strictly for testing
+ *
+ * @param mixed $var
+ * @return void
+ */
 function print_clean($var){
     echo '<pre>';
     print_r($var);

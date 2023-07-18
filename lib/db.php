@@ -23,6 +23,13 @@ class db{
     }
 
     /**
+     * @return string|false
+     */
+    function last_insert_id(){
+        return $this->db->lastInsertId();
+    }
+
+    /**
      * @param string $sql
      * @param array $params
      * @param bool $return_statement

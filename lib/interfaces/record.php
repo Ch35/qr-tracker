@@ -27,36 +27,51 @@ abstract class record{
         return $DB->get_record($sql, ['id' => $id]);
     }
 
+    /**
+     * @param array|object $properties
+     */
     function __construct($properties = null){
         self::check_table_implemented();
 
+        // TODO: validate with all mapped DB columns
         $this->properties = (object)$properties;
         $this->table = static::TABLE;
+    }
+
+    function set_properties($properties){
+        $this->properties = (object)array_merge((array)$this->properties, (array)$properties);
     }
 
     function set_property($property, $value){
         $this->properties->$property = $value;
     }
 
-    // TODO: test
     function insert(){
         global $DB;
 
-        if($this->exists()){
+        if($this->exists() || empty($this->properties)){
             return;
         }
 
         $properties = (array)$this->properties;
+        $keys = array_keys($properties);
 
-        $columns = implode(',', array_keys($properties));
-        $values = ':'.implode(',:', $properties);
+        $columns = implode(',', $keys);
+        $values = ':'.implode(',:', $keys);
 
         $sql = "INSERT INTO $this->table ($columns)
                 VALUES ($values)";
-        return $DB->execute($sql, $properties);
+        $success = $DB->execute($sql, $properties);
+
+        if($success){
+            if($lastid = $DB->last_insert_id()){
+                $this->properties->id = $lastid;
+            }
+        }
+
+        return $success;
     }
 
-    // TODO: test
     function update(){
         global $DB;
 
@@ -64,15 +79,19 @@ abstract class record{
             return;
         }
 
-        // TODO:
-        $sql = 'UPDATE';
+        $colset = '';
+        foreach($this->properties AS $property => $value){
+            $colset .= "$property = :$property,";
+        }
+        $colset = rtrim($colset, ',');
 
-        return $DB->execute($sql, [
-            'id' => $this->properties->id
-        ]);
+        $sql = "UPDATE $this->table
+                SET $colset
+                WHERE id = :id";
+
+        return $DB->execute($sql, (array)$this->properties);
     }
-
-    // TODO: test
+    
     function delete(){
         global $DB;
 
