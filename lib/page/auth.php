@@ -63,9 +63,22 @@ class auth extends page{
     }
 
     /**
+     * @return string
+     */
+    public static function get_qrid_from_sesskey(){
+        if(!isset($_SESSION['sesskey'])){
+            return false;
+        }
+
+        list($qrid, $timestamp) = explode('_', $_SESSION['sesskey']);
+
+        return $qrid;
+    }
+
+    /**
      * @param string $key
      * @param array $requested_qrid
-     * @return bool|
+     * @return bool|page
      */
     private function validate_sesskey($key, $requested_qr_record = null){
         list($qrid, $timestamp) = explode('_', $key);

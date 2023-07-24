@@ -1,49 +1,88 @@
-export const ALERT_WARNING = 0;
-export const ALERT_SUCCESS = 1;
-export const ALERT_STR_MAP = {
-    [ALERT_WARNING]: 'warning',
-    [ALERT_SUCCESS]: 'success'
-}
-export const ALERT_CLASS_MAP = {
-    [ALERT_WARNING]: 'danger',
-    [ALERT_SUCCESS]: 'success'
+const CONTROLLER_EL = document.getElementById('controller');
+const CFG = {
+    wwwroot: CONTROLLER_EL.getAttribute('wwwroot')
 }
 
-export function append_notice(msg, alerttype){
-    console.log('Appending notice'); //! debug
+const ALERT = {
+    WARNING: 0,
+    SUCCESS: 1,
+    STR_MAP: {
+        0: 'warning',
+        1: 'success'
+    },
+    CLASS_MAP: {
+        0: 'danger',
+        1: 'success'
+    },
 
-    let alertcontainer = document.getElementById('alerts');
-
-    if(!alertcontainer){
-        alert(ALERT_STR_MAP[alerttype]+' | "'+msg+'"');
-        return;
+    append_notice: function append_notice(msg, alerttype){
+        let alertcontainer = document.getElementById('alerts');
+    
+        if(!alertcontainer){
+            alert(this.STR_MAP[alerttype]+' | "'+msg+'"');
+            return;
+        }
+    
+        let notice = document.createElement('div');
+        notice.innerHTML = msg;
+        notice.classList.add('alert');
+        notice.classList.add('alert-'+this.CLASS_MAP[alerttype])
+        notice.setAttribute('role', 'alert');
+    
+        alertcontainer.appendChild(notice);
     }
-
-    let notice = document.createElement('div');
-    notice.innerHTML = msg;
-    notice.classList.add('alert');
-    notice.classList.add('alert-'+ALERT_CLASS_MAP[alerttype])
-    notice.setAttribute('role', 'alert');
-
-    alertcontainer.appendChild(notice);
 }
 
-class location{
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function ajaxRequest(callback, method, params = null){
+    fetch(CFG.wwwroot+'/service.php', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            method: method,
+            params: params
+        })
+    }).then(callback, callback);
+}
+
+class location_handler{
     constructor(){
         this.checkLocationEnabled();
+    }
+
+    static getCoords(){
+        return getCookie('location');
     }
 
     checkLocationEnabled(){
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(this.showPosition, this.showError);
         } else {
-            append_notice('Geolocation not supported on this browser. Please try a different browser.', ALERT_WARNING);
+            append_notice('Geolocation not supported on this browser. Please try a different browser.', ALERT.WARNING);
         }
     }
 
     showPosition(position) {
-        console.log("Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude);
-        // TODO: SEND LOCATION VIA AJAX
+        if(!position){
+            console.error('Location missing');
+            return;
+        }
+
+        let coords = {
+            latitude:position.coords.latitude,
+            longitude:position.coords.longitude,
+        };
+
+        // console.log(coords); //! debug
+        document.cookie = "location="+JSON.stringify(coords);
     }
 
     showError(error) {
@@ -74,4 +113,4 @@ class location{
     }
 }
 
-export var Location = new location;
+new location_handler();

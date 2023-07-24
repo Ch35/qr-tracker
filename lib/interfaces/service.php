@@ -3,8 +3,6 @@
 namespace interfaces;
 
 abstract class service{
-    private const SERVICE_NOT_FOUND = 404;
-
     /**
      * @param array $params
      * @return array|object
@@ -18,7 +16,7 @@ abstract class service{
      */
     public static function init($method, $params = []){
         if(empty($method)){
-            throw new \Exception('Method name required', self::SERVICE_NOT_FOUND);
+            throw new \Exception('Method name required', 404);
         }
 
         $serviceclass = 'service\\'.$method;
@@ -28,7 +26,7 @@ abstract class service{
             $service->respond($params);
 
         } else{
-            throw new \Exception("Service[$method] not found", self::SERVICE_NOT_FOUND);
+            throw new \Exception("Service[$method] not found", 404);
         }
     }
 
@@ -40,7 +38,7 @@ abstract class service{
         error_reporting(E_ERROR | E_PARSE);
 
         if($this->must_validate_sesskey() && !validate_sesskey()){
-            throw new \Exception('Failed to validate session key', 'invalid_sesskey');
+            throw new \Exception('Failed to validate session key', 401);
         }
 
         echo $this->encoding($this->execute($params));

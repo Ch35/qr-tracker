@@ -9,6 +9,10 @@ class db{
         global $CFG;
 
         $this->db = new PDO("mysql:dbname=$CFG->dbname;host=$CFG->dbhost", $CFG->dbusername, $CFG->dbpassword);
+
+        if($CFG->debugmode){
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        }
     }
 
     /**

@@ -28,10 +28,20 @@ abstract class record{
     }
 
     /**
+     * @param int $id
      * @param array|object $properties
      */
-    function __construct($properties = null){
+    function __construct($id = null, $properties = null){
         self::check_table_implemented();
+
+        if($id){
+            $properties = self::get_record($id);
+
+            if(empty($properties)){
+                $classname = get_class($this);
+                throw new \Exception("Missing $classname record from ID[$id]");
+            }
+        }
 
         // TODO: validate with all mapped DB columns
         $this->properties = (object)$properties;
@@ -63,10 +73,8 @@ abstract class record{
                 VALUES ($values)";
         $success = $DB->execute($sql, $properties);
 
-        if($success){
-            if($lastid = $DB->last_insert_id()){
-                $this->properties->id = $lastid;
-            }
+        if($success && $lastid = $DB->last_insert_id()){
+            $this->properties->id = $lastid;
         }
 
         return $success;

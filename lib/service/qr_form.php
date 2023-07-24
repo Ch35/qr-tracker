@@ -2,18 +2,34 @@
 
 namespace service;
 
+use page\auth;
 use record\scanlog AS scanlog_record;
+use record\qr AS qr_record;
 
 class qr_form extends \interfaces\service{
+    /**
+     * @param array $params
+     * @return array
+     */
     protected function execute($params){
         global $CFG;
 
-        list($location, $storename) = $this->validate_params($params);
+        // Validate and get the below data
+        $userdevice = self::get_user_device();
+        $ip = self::get_user_ip();
 
-        $scanlog = new scanlog_record([
-            'standid' => '', // TODO: get stand/QR ID
-            'ip' => '', // TODO: get user IP
-            'device' => '', // TODO: get user device
+        list($location, $storename) = $this->validate_params($params);
+        $qrid = auth::get_qrid_from_sesskey();
+
+        if(empty($qrid)){
+            throw new \Exception('Missing QR ID from session.');
+        }
+
+        $scanlog = new scanlog_record(null, [
+            'standid' => $qrid,
+            'location' => $location,
+            'ip' => $ip,
+            'device' => $userdevice,
             'timestamp' => $CFG->timestamp,
         ]);
 
@@ -21,7 +37,11 @@ class qr_form extends \interfaces\service{
             throw new \Exception('Failed to insert scan log');
         }
 
-        // TODO: if storename is included - update it in the DB
+        if(isset($storename)){
+            $record = new qr_record($qrid);
+            $record->set_property('storename', $storename);
+            $record->update();
+        }
 
         return $params;
     }
@@ -38,10 +58,50 @@ class qr_form extends \interfaces\service{
             throw new \Exception('Failed to validate device location');
         }
 
-        // TODO: do additional optional checks for store name updates
+        if(isset($params['storename'])){
+            $storename = $params['storename'];
+
+            if(strlen($params['storename']) > 255){
+                throw new \Exception('Store name exceded character limit');
+            }
+
+        } else{
+            $storename = null;
+        }
+
+        return [
+            $params['location'],
+            $storename
+        ];
     }
 
     private static function validate_location($location){
         // TODO:
+        return true;
+    }
+
+    private static function get_user_ip(){
+        // TODO: improve this approach
+        $ip = $_SERVER['REMOTE_ADDR'];
+
+        if(filter_var($ip, FILTER_VALIDATE_IP)){
+            return $ip;
+        }
+        
+        throw new \Exception('Invalid IP address');
+    }
+
+    /**
+     * Fetches and validates user device
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private static function get_user_device(){
+        if(empty($_SERVER['HTTP_USER_AGENT'])){
+            throw new \Exception('skill issue :(', 401);
+        }
+
+        return $_SERVER['HTTP_USER_AGENT'];
     }
 }
