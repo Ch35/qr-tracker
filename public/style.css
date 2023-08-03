@@ -1,5 +1,6 @@
 :root{
     --primary: #b71a21;
+    --secondary: pink;
     --black: #040303;
 }
 
@@ -15,6 +16,16 @@
 .btn-primary:hover{
     background-color: var(--black);
     border-color: var(--black);
+}
+
+.btn-secondary{
+    background-color: var(--primary);
+    border-color: white;
+}
+.btn-secondary:hover{
+    color: var(--primary);
+    background-color: white;
+    border-color: white;
 }
 
 .header{

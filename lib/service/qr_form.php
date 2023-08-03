@@ -12,7 +12,7 @@ class qr_form extends \interfaces\service{
      * @return array
      */
     protected function execute($params){
-        global $CFG;
+        global $CFG, $DB;
 
         // Validate and get the below data
         $userdevice = self::get_user_device();
@@ -25,22 +25,33 @@ class qr_form extends \interfaces\service{
             throw new \Exception('Missing QR ID from session.');
         }
 
-        $scanlog = new scanlog_record(null, [
-            'standid' => $qrid,
-            'location' => $location,
-            'ip' => $ip,
-            'device' => $userdevice,
-            'timestamp' => $CFG->timestamp,
-        ]);
-
-        if(!$scanlog->insert()){
-            throw new \Exception('Failed to insert scan log');
-        }
-
         if(isset($storename)){
             $record = new qr_record($qrid);
-            $record->set_property('storename', $storename);
-            $record->update();
+            $record->set_property('store_name', $storename);
+            $updated = $record->update();
+
+            if($updated === false){
+                throw new \Exception('Failed to update storename');
+                
+            } elseif($updated === null){
+                throw new \Exception('QR Record doesn\'t exist.');
+            }
+        }
+
+        // only need to record one scanlog per session
+        if(!scanlog_record::check_exists($_SESSION['sesskey'])){
+            $scanlog = new scanlog_record(null, [
+                'standid' => $qrid,
+                'sesskey' => get_sesskey(),
+                'location' => $location,
+                'ip' => $ip,
+                'device' => $userdevice,
+                'timestamp' => $CFG->timestamp,
+            ]);
+    
+            if(!$scanlog->insert()){
+                throw new \Exception('Failed to insert scan log');
+            }
         }
 
         return $params;

@@ -18,4 +18,6 @@ $GLOBALS['CFG'] = (object)[
     'debugmode' => true
 ];
 
+$CFG->partialroot = parse_url($CFG->wwwroot)['path'];
+
 require __DIR__.'/lib/setup.php';

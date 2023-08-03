@@ -55,14 +55,6 @@ class auth extends page{
     }
 
     /**
-     * @param array $config
-     * @return array
-     */
-    function init_config() : array{
-        return [];
-    }
-
-    /**
      * @return string
      */
     public static function get_qrid_from_sesskey(){

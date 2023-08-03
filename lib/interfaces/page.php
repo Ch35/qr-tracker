@@ -18,6 +18,7 @@ abstract class page{
     ];
 
     protected $config;
+    protected $pagesetup;
 
     /**
      * Singletons should not be cloneable.
@@ -38,9 +39,12 @@ abstract class page{
     private function __construct(){}
 
     /**
+     * @param array $config
      * @return array
      */
-    protected abstract function init_config() : array;
+    protected function init_config() : array{
+        return [];
+    }
 
     /**
      * Whether to route to a different page
@@ -70,10 +74,20 @@ abstract class page{
     public function render(){
         global $OUTPUT;
 
-        $this->init_config();
+        $this->config = $this->init_config();
 
         list($namespace, $template) = explode('\\', get_class($this));
-        echo $OUTPUT->render($template, $this->config);
+        echo $OUTPUT->render($template, $this->config, $this->pagesetup);
+    }
+
+    /**
+     * Adds JS file to be loaded from the HTML head
+     *
+     * @param string $file
+     * @return void
+     */
+    protected function loadjs($file){
+        $this->pagesetup['js'][] = $file;
     }
 
     /**
@@ -90,6 +104,6 @@ abstract class page{
             throw new Exception('Invalid alert type');
         }
 
-        $this->config['alerts'][self::ALERT_TYPES[$alerttype]][] = $text;
+        $this->pagesetup['alerts'][self::ALERT_TYPES[$alerttype]][] = $text;
     }
 }

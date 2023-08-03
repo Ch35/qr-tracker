@@ -1,37 +1,43 @@
+const coords = location_handler.getCoords();
+const logoutBtn = document.getElementById('logout');
 const submitBtn = document.getElementById('submitBtn');
 const form = document.getElementById('form');
 
-// TODO: send ajaxRequest to log scan
+// Log scan
+if(!coords){
+    ALERT.append_notice('Unable to get location. Try logging out and scanning again.', ALERT.WARNING);
+} else{
+    ajaxRequest(response => {
+        console.log(response);
+    
+    }, 'qr_form', {
+        location: coords
+    });
+}
+
+logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    ajaxRequest(response => {
+        window.location.href = window.location.href;
+    }, 'logout');
+});
 
 submitBtn.addEventListener('click', (e) => {
     e.preventDefault();
-
-    let coords = location_handler.getCoords();
 
     if(!coords){
         ALERT.append_notice('Unable to get location. Try logging out and scanning again.', ALERT.WARNING);
         return;
     }
 
-    // TODO: send ajaxRequest on submission
+    ajaxRequest((response) => {
+        if(response.storename){
+            ALERT.append_notice('Updated store name.', ALERT.SUCCESS);
+        }
 
-    // ajaxRequest((response) => {
-    //     console.log(JSON.stringify(response));
-    // }, 'qr_form', {
-    //     location: 'latitude 120391203',
-    //     storename: 'amogus store'
-    // });
+    }, 'qr_form', {
+        location: coords,
+        storename: form.elements.namedItem("storename").value,
+    });
 });
-
-
-// fetch('http://localhost/grtracker/service.php', {
-//     method: 'POST',
-//     headers: {
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({
-//         method: 'qr_form',
-//         params: {location:"Latitude: -33.8248911<br>Longitude: 18.4855064",storename:"storename"}
-//     })
-// }).then(response => response.json()).then(response => console.log(JSON.stringify(response)));

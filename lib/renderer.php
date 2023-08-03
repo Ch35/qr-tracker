@@ -28,19 +28,20 @@ class renderer {
         $this->m = new Mustache_Engine($properties);
     }
 
-    public function render($template, $data = []) {
+    public function render($template, $data = [], $pagesetup = []) {
         global $CFG;
 
-        $title = isset($data['title']) ? $data['title'] : $CFG->title;
+        $title = isset($pagesetup['title']) ? $pagesetup['title'] : $CFG->title;
         $data['cfg'] = $CFG;
 
         return $this->m->render('partials/html', [
             'content' => $this->m->render($template, $data),
             'cfg' => $CFG,
             'title' => $title,
-            'alerts' => isset($data['alerts']) ? $data['alerts'] : false,
+            'alerts' => isset($pagesetup['alerts']) ? $pagesetup['alerts'] : false,
             'template' => $template,
-            'usejs' => file_exists(__DIR__.'/../public/js/pages/'.$template.'.js')
+            'js' => isset($pagesetup['js']) ? $pagesetup['js'] : false,
+            'authenticated' => isset($_SESSION['sesskey']),
         ]);
     }
 

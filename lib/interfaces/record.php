@@ -48,6 +48,14 @@ abstract class record{
         $this->table = static::TABLE;
     }
 
+    function get_property($property){
+        return isset($this->properties->$property) ? $this->properties->$property : false;
+    }
+
+    function get_properties(){
+        return $this->properties;
+    }
+
     function set_properties($properties){
         $this->properties = (object)array_merge((array)$this->properties, (array)$properties);
     }
@@ -80,11 +88,16 @@ abstract class record{
         return $success;
     }
 
+    /**
+     * Returns null if the record doesn't exist
+     *
+     * @return bool|null
+     */
     function update(){
         global $DB;
 
         if(!$this->exists()){
-            return;
+            return null;
         }
 
         $colset = '';
